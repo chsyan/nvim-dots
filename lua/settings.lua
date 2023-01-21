@@ -18,7 +18,7 @@ opt.cmdheight = 2
 opt.updatetime = 250
 opt.timeoutlen = 500
 opt.clipboard = "unnamedplus"
-opt.scrolloff = 5
+opt.scrolloff = 8
 opt.lazyredraw = true
 opt.linebreak = true
 

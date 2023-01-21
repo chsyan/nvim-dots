@@ -7,28 +7,37 @@ vim.cmd([[
   augroup end
 ]])
 
+vim.api.nvim_create_autocmd('BufWritePost', {
+	pattern = '*',
+	callback = function()
+		MiniTrailspace.trim()
+		MiniTrailspace.trim_last_lines()
+		vim.lsp.buf.format()
+	end
+})
+
 vim.api.nvim_create_autocmd('BufWinEnter', {
-  pattern = '*',
-  callback = function()
-    if vim.bo.filetype == 'NvimTree' then
-      require'bufferline.api'.set_offset(31, 'FileTree')
-    end
-  end
+	pattern = '*',
+	callback = function()
+		if vim.bo.filetype == 'NvimTree' then
+			require 'bufferline.api'.set_offset(31, 'FileTree')
+		end
+	end
 })
 
 vim.api.nvim_create_autocmd('BufWinLeave', {
-  pattern = '*',
-  callback = function()
-    if vim.fn.expand('<afile>'):match('NvimTree') then
-      require'bufferline.api'.set_offset(0)
-    end
-  end
+	pattern = '*',
+	callback = function()
+		if vim.fn.expand('<afile>'):match('NvimTree') then
+			require 'bufferline.api'.set_offset(0)
+		end
+	end
 })
 
 -- Call copilot auth on startup
-vim.api.nvim_create_autocmd('BufEnter', {
-  pattern = '*',
-  callback = function()
-    vim.cmd('Copilot')
-  end
+vim.api.nvim_create_autocmd('BufWinEnter', {
+	pattern = '*',
+	callback = function()
+		vim.cmd('silent Copilot')
+	end
 })

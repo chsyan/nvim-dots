@@ -1,86 +1,105 @@
-local function map(mode, lhs, rhs, opts)
-  local options = { noremap = true, silent = true }
-  if opts then options = vim.tbl_extend('force', options, opts) end
-  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
-
 vim.g.mapleader = ' '
 
 -- Set cr for clearing highlights after searching word in file.
-map('n', '<Esc>', ':noh<CR>', { silent = true })
+vim.keymap.set('n', '<Esc>', ':noh<CR>')
 
 -- Don't copy the replaced text after pasting in visual mode.
-map('v', 'p', '"_dP')
+vim.keymap.set('v', 'p', '"_dP')
 
 -- Split navigations.
-map('n', '<C-j>', '<C-w><C-j>')
-map('n', '<C-k>', '<C-w><C-k>')
-map('n', '<C-l>', '<C-w><C-l>')
-map('n', '<C-h>', '<C-w><C-h>')
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>')
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>')
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>')
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>')
 
 -- Split resize.
-map('n', '<C-Up>', ':resize +1<CR>')
-map('n', '<C-Down>', ':resize -1<CR>')
-map('n', '<C-Right>', ':vertical resize +1<CR>')
-map('n', '<C-Left>', ':vertical resize -1<CR>')
+vim.keymap.set('n', '<C-Up>', ':resize +1<CR>')
+vim.keymap.set('n', '<C-Down>', ':resize -1<CR>')
+vim.keymap.set('n', '<C-Right>', ':vertical resize +1<CR>')
+vim.keymap.set('n', '<C-Left>', ':vertical resize -1<CR>')
 
 -- Indent visual block.
-map('v', '<', '<gv')
-map('v', '>', '>gv')
+vim.keymap.set('v', '<', '<gv')
+vim.keymap.set('v', '>', '>gv')
 
 -- Less keystrokes.
-map('n', ';', ':')
+vim.keymap.set('n', ';', ':')
 
 -- Allow moving the cursor through wrapped lines with j, k, <Up> and <Down>.
-map('', 'j', 'v:count ? "j" : "gj"', { expr = true })
-map('', 'k', 'v:count ? "k" : "gk"', { expr = true })
-map('', '<Down>', 'v:count ? "j" : "gj"', { expr = true })
-map('', '<Up>', 'v:count ? "k" : "gk"', { expr = true })
+vim.keymap.set('', 'j', 'v:count ? "j" : "gj"', { expr = true })
+vim.keymap.set('', 'k', 'v:count ? "k" : "gk"', { expr = true })
+vim.keymap.set('', '<Down>', 'v:count ? "j" : "gj"', { expr = true })
+vim.keymap.set('', '<Up>', 'v:count ? "k" : "gk"', { expr = true })
 
--- NvimTree
-map('n', '<leader>ee', ':NvimTreeToggle<CR>', { silent = true })
-map('n', '<leader>er', ':NvimTreeRefresh<CR>', { silent = true })
+-- Move visual
+vim.keymap.set('v', 'J', ":m '>+1<cr>gv=gv")
+vim.keymap.set('v', 'K', ":m '>-2<cr>gv=gv")
+
+-- Don't move cursor on shift+j
+vim.keymap.set('n', 'J', 'mzJ`z')
+
+-- Keep cursor center on page up/down
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+
+-- Keep search terms in middle
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
+
+-- Keep clipboards separate
+vim.keymap.set('n', '<leader>y', '"+y')
+vim.keymap.set('v', '<leader>y', '"+y')
+vim.keymap.set('n', '<leader>Y', '"+Y')
+
+-- Replace current word
+vim.keymap.set('n', '<leader>s', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
+-- Chmod +x current file
+vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>')
 
 -- Telescope.
-map("n", "<Leader>tfg", ":Telescope live_grep<CR>")
-map("n", "<Leader>tc", ":Telescope git_commits<CR>")
-map("n", "<Leader>tff", ":Telescope find_files<CR>")
-map("n", "<Leader>tm", ":lua require('telescope').extensions.media_files.media_files()<CR>")
-map("n", "<Leader>tb", ":Telescope buffers<CR>")
-map("n", "<Leader>td", ":TodoTelescope")
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>gg', builtin.git_files, {})
+vim.keymap.set('n', '<leader>lg', builtin.live_grep, {})
+
+-- Harpoon
+local mark = require('harpoon.mark')
+local ui = require('harpoon.ui')
+vim.keymap.set('n', '<leader>ha', mark.add_file)
+vim.keymap.set('n', '<leader>hm', '<cmd>Telescope harpoon marks<cr>')
+vim.keymap.set('n', '<C-q>', ui.nav_prev)
+vim.keymap.set('n', '<C-e>', ui.nav_next)
 
 -- Undotree
-map('n', '<leader>u', ':UndotreeToggle<CR>')
-
--- Neogit
-map('n', '<leader>n', ':Neogit<CR>')
+vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
 
 -- LSP.
-map('n', '<leader>,', ':lua vim.diagnostic.goto_prev()<CR>')
-map('n', '<leader>.', ':lua vim.diagnostic.goto_next()<CR>')
-map('n', '<leader>/', ':lua vim.diagnostic.open_float()<CR>')
-map('n', '<leader>gd', ':lua vim.lsp.buf.definition()<CR>')
-map('n', '<leader>gi', ':lua vim.lsp.buf.implementation()<CR>')
-map('n', '<leader>gD', ':lua vim.lsp.buf.declaration()<CR>')
-map('n', '<leader>s', ':lua vim.lsp.buf.signature_help()<CR>')
-map('n', '<leader>h', ':lua vim.lsp.buf.hover()<CR>')
-map('n', '<leader>f', ':lua vim.lsp.buf.format{async = true}<CR>')
-map('n', '<leader>ca', ':lua vim.lsp.buf.code_action()<CR>')
-map('n', '<leader>rn', ':lua vim.lsp.buf.rename()<CR>')
-map('n', '<leader>rf', ':lua vim.lsp.buf.references()<CR>')
+-- vim.keymap.set('n', '<leader>,', ':lua vim.diagnostic.goto_prev()<CR>')
+-- vim.keymap.set('n', '<leader>.', ':lua vim.diagnostic.goto_next()<CR>')
+-- vim.keymap.set('n', '<leader>/', ':lua vim.diagnostic.open_float()<CR>')
+-- vim.keymap.set('n', '<leader>gd', ':lua vim.lsp.buf.definition()<CR>')
+-- vim.keymap.set('n', '<leader>gi', ':lua vim.lsp.buf.implementation()<CR>')
+-- vim.keymap.set('n', '<leader>gD', ':lua vim.lsp.buf.declaration()<CR>')
+-- vim.keymap.set('n', '<leader>s', ':lua vim.lsp.buf.signature_help()<CR>')
+-- vim.keymap.set('n', '<leader>h', ':lua vim.lsp.buf.hover()<CR>')
+-- vim.keymap.set('n', '<leader>f', ':lua vim.lsp.buf.format{async = true}<CR>')
+-- vim.keymap.set('n', '<leader>ca', ':lua vim.lsp.buf.code_action()<CR>')
+-- vim.keymap.set('n', '<leader>rn', ':lua vim.lsp.buf.rename()<CR>')
+-- vim.keymap.set('n', '<leader>rf', ':lua vim.lsp.buf.references()<CR>')
 
 -- Bufferline
-map('n', '<A-l>', ':BufferLineCycleNext<CR>')
-map('n', '<A-h>', ':BufferLineCyclePrev<CR>')
-map('n', '<A-L>', ':BufferLineMoveNext<CR>')
-map('n', '<A-H>', ':BufferLineMovePrev<CR>')
-map('n', '<A-p>', ':BufferLineTogglePin<CR>')
-map('n', '<A-1>', ':BufferLineGoToBuffer1<CR>')
-map('n', '<A-2>', ':BufferLineGoToBuffer2<CR>')
-map('n', '<A-3>', ':BufferLineGoToBuffer3<CR>')
-map('n', '<A-4>', ':BufferLineGoToBuffer4<CR>')
-map('n', '<A-5>', ':BufferLineGoToBuffer5<CR>')
-map('n', '<A-6>', ':BufferLineGoToBuffer6<CR>')
-map('n', '<A-7>', ':BufferLineGoToBuffer7<CR>')
-map('n', '<A-8>', ':BufferLineGoToBuffer8<CR>')
-map('n', '<A-9>', ':BufferLineGoToBuffer9<CR>')
+vim.keymap.set('n', '<A-l>', ':BufferLineCycleNext<CR>')
+vim.keymap.set('n', '<A-h>', ':BufferLineCyclePrev<CR>')
+vim.keymap.set('n', '<A-L>', ':BufferLineMoveNext<CR>')
+vim.keymap.set('n', '<A-H>', ':BufferLineMovePrev<CR>')
+vim.keymap.set('n', '<A-p>', ':BufferLineTogglePin<CR>')
+vim.keymap.set('n', '<A-1>', ':BufferLineGoToBuffer1<CR>')
+vim.keymap.set('n', '<A-2>', ':BufferLineGoToBuffer2<CR>')
+vim.keymap.set('n', '<A-3>', ':BufferLineGoToBuffer3<CR>')
+vim.keymap.set('n', '<A-4>', ':BufferLineGoToBuffer4<CR>')
+vim.keymap.set('n', '<A-5>', ':BufferLineGoToBuffer5<CR>')
+vim.keymap.set('n', '<A-6>', ':BufferLineGoToBuffer6<CR>')
+vim.keymap.set('n', '<A-7>', ':BufferLineGoToBuffer7<CR>')
+vim.keymap.set('n', '<A-8>', ':BufferLineGoToBuffer8<CR>')
+vim.keymap.set('n', '<A-9>', ':BufferLineGoToBuffer9<CR>')

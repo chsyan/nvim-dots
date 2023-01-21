@@ -10,6 +10,7 @@ local use = require('packer').use
 return require('packer').startup({ function()
   use { 'wbthomason/packer.nvim' }
   use { 'nvim-lua/plenary.nvim' }
+  use { 'nvim-lua/popup.nvim' }
   use { 'kyazdani42/nvim-web-devicons', event = 'BufEnter' }
 
   -- Colorscheme
@@ -82,16 +83,39 @@ return require('packer').startup({ function()
 
   -- Telescope 
   use {
+    -- Fuzzy finder native
+    'nvim-telescope/telescope-fzf-native.nvim', 
+    run = 'make' 
+  }
+  -- Preview media files
+  use { 'nvim-telescope/telescope-media-files.nvim' }
+  use {
     'nvim-telescope/telescope.nvim',
+    tag = '0.1.1',
     config = function()
       require('plugins/telescope')
     end
   }
 
+  -- Treesitter
+  use {
+    'nvim-treesitter/nvim-treesitter', 
+    run = ':TSUpdate',
+    config = function()
+      require('plugins/treesitter')
+    end
+  }
 
   -- Harpoon navigation
+  use { 
+    'ThePrimeagen/harpoon',
+    config = function()
+      require('plugins/harpoon')
+    end
+  }
 
-
+  -- Undotree
+  use { 'mbbill/undotree' }
 
   if packer_bootstrap then
     require('packer').sync()

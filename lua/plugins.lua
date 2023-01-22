@@ -192,6 +192,9 @@ return require('packer').startup({
 			end
 		}
 
+		-- Fugitive
+		use { 'tpope/vim-fugitive' }
+
 		-- Bufferline
 		use {
 			'akinsho/bufferline.nvim',

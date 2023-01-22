@@ -188,13 +188,35 @@ cc.add(
 			desc = 'Next mark',
 			cmd = ui.nav_next,
 			keys = { 'n', '<c-e>', noremap },
-		}
+		},
+		{
+			desc = 'Goto mark 1',
+			cmd = function() ui.nav_file(1) end,
+			keys = { 'n', '<c-1>', noremap },
+		},
+		{
+			desc = 'Goto mark 2',
+			cmd = function() ui.nav_file(2) end,
+			keys = { 'n', '<c-2>', noremap },
+		},
+		{
+			desc = 'Goto mark 3',
+			cmd = function() ui.nav_file(3) end,
+			keys = { 'n', '<c-3>', noremap },
+		},
+		{
+			desc = 'Goto mark 4',
+			cmd = function() ui.nav_file(4) end,
+			keys = { 'n', '<c-4>', noremap },
+		},
 	},
 	{
 		category = 'Harpoon'
 	})
 
 -- Open plugins
+local neogit = require('neogit')
+local git = require('gitsigns')
 cc.add({
 	{
 		desc = 'Toggle undo tree',
@@ -207,8 +229,59 @@ cc.add({
 		cmd = '<cmd>Neotree toggle<cr>',
 		keys = { 'n', '\\', noremap },
 		category = 'Neotree'
+	},
+	{
+		desc = 'Open Neogit',
+		cmd = neogit.open,
+		keys = { 'n', '<leader>n', noremap },
+		category = 'Neogit'
+	},
+	{
+		desc = 'Git status',
+		cmd = vim.cmd.Git,
+		keys = { 'n', '<leader>gs', noremap },
+		category = 'Fugitive'
 	}
 })
+
+-- Bufferline
+cc.add(
+	{
+		{
+			desc = 'Close buffer',
+			cmd = vim.cmd.bdelete,
+			keys = { 'n', '<m-w>', noremap },
+		},
+		{
+			desc = 'Next buffer',
+			cmd = vim.cmd.bn,
+			keys = { 'n', '<m-e>', noremap },
+		},
+		{
+			desc = 'Previous bufer',
+			cmd = vim.cmd.bp,
+			keys = { 'n', '<m-q>', noremap },
+		},
+		{
+			desc = 'Move buffer left',
+			cmd = vim.cmd.BufferLineMovePrev,
+			keys = { 'n', '<m-s-q>', noremap },
+		},
+		{
+			desc = 'Move bufer right',
+			cmd = vim.cmd.BufferLineMoveNext,
+			keys = { 'n', '<m-s-e>', noremap },
+		},
+		{
+			desc = 'Pin buffer',
+			cmd = vim.cmd.BufferLineTogglePin,
+			keys = { 'n', '<m-p>', noremap },
+		}
+	},
+	{
+		category = 'Bufferline'
+	}
+)
 
 -- LSP.
 cc.add(
@@ -247,7 +320,7 @@ cc.add(
 		},
 		{
 			desc = 'Format',
-			cmd = '<cmd>lua vim.lsp.buf.format({async = true})<cr>',
+			cmd = function() vim.lsp.buf.format({async = true}) end,
 			keys = {
 				{ 'n', '<m-s-f>', noremap },
 				{ 'v', '<m-s-f>', noremap },

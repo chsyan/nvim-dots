@@ -1,105 +1,276 @@
+local cc = require('command_center')
+local noremap = { noremap = true }
+local silent = { silent = true }
+local silent_noremap = { silent = true, noremap = true }
+local expr = { expr = true }
+
 vim.g.mapleader = ' '
 
--- Set cr for clearing highlights after searching word in file.
-vim.keymap.set('n', '<Esc>', ':noh<CR>')
-
--- Don't copy the replaced text after pasting in visual mode.
-vim.keymap.set('v', 'p', '"_dP')
-
--- Split navigations.
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>')
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>')
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>')
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>')
-
--- Split resize.
-vim.keymap.set('n', '<C-Up>', ':resize +1<CR>')
-vim.keymap.set('n', '<C-Down>', ':resize -1<CR>')
-vim.keymap.set('n', '<C-Right>', ':vertical resize +1<CR>')
-vim.keymap.set('n', '<C-Left>', ':vertical resize -1<CR>')
-
--- Indent visual block.
-vim.keymap.set('v', '<', '<gv')
-vim.keymap.set('v', '>', '>gv')
-
--- Less keystrokes.
-vim.keymap.set('n', ';', ':')
-
+-- Background binds
+-- CC doesn't allow for inputing expr so using vim api
 -- Allow moving the cursor through wrapped lines with j, k, <Up> and <Down>.
-vim.keymap.set('', 'j', 'v:count ? "j" : "gj"', { expr = true })
-vim.keymap.set('', 'k', 'v:count ? "k" : "gk"', { expr = true })
-vim.keymap.set('', '<Down>', 'v:count ? "j" : "gj"', { expr = true })
-vim.keymap.set('', '<Up>', 'v:count ? "k" : "gk"', { expr = true })
+vim.keymap.set('', 'j', 'v:count ? "j" : "gj"', expr)
+vim.keymap.set('', 'k', 'v:count ? "k" : "gk"', expr)
+vim.keymap.set('', '<Down>', 'v:count ? "j" : "gj"', expr)
+vim.keymap.set('', '<Up>', 'v:count ? "k" : "gk"', expr)
 
--- Move visual
-vim.keymap.set('v', 'J', ":m '>+1<cr>gv=gv")
-vim.keymap.set('v', 'K', ":m '>-2<cr>gv=gv")
+cc.add({
+	{
+		desc = 'Clear highlights',
+		cmd = '<cmd>noh<cr>',
+		keys = { 'n', '<esc>', noremap },
+	},
+	{
+		desc = "Don't copy the replaced text after pasting in visual mode",
+		cmd = '"_dP"',
+		keys = { 'v', 'p', noremap },
+	},
+	{
+		desc = 'Split nav down',
+		cmd = '<c-w><c-j>',
+		keys = { 'n', '<c-j>', noremap },
+	},
+	{
+		desc = 'Split nav up',
+		cmd = '<c-w><c-k>',
+		keys = { 'n', '<c-k>', noremap },
+	},
+	{
+		desc = 'Split nav left',
+		cmd = '<c-w><c-h>',
+		keys = { 'n', '<c-h>', noremap },
+	},
+	{
+		desc = 'Split nav right',
+		cmd = '<c-w><c-l>',
+		keys = { 'n', '<c-l>', noremap },
+	},
+	{
+		desc = 'Split resize up',
+		cmd = '<cmd>resize +1<cr>',
+		keys = { 'n', '<c-s-k>', noremap },
+	},
+	{
+		desc = 'Split resize down',
+		cmd = '<cmd>resize -1<cr>',
+		keys = { 'n', '<c-s-j>', noremap },
+	},
+	{
+		desc = 'Split resize left',
+		cmd = '<cmd>vertical resize -1<cr>',
+		keys = { 'n', '<c-s-h>', noremap },
+	},
+	{
+		desc = 'Split resize right',
+		cmd = '<cmd>vertical resize +1<cr>',
+		keys = { 'n', '<c-s-l>', noremap },
+	},
+	{
+		desc = 'Indent visual block',
+		cmd = '>gv',
+		keys = { 'v', '>', noremap },
+	},
+	{
+		desc = 'Unindent visual block',
+		cmd = '<gv',
+		keys = { 'v', '<', noremap },
+	},
+	{
+		desc = 'One less keystroke',
+		cmd = ':',
+		keys = { 'n', ';', noremap },
+	},
+	{
+		desc = 'Move visual up',
+		cmd = ":m '<-2<cr>gv=gv",
+		keys = { 'v', 'K', noremap },
+	},
+	{
+		desc = 'Move visual down',
+		cmd = ":m '>+1<cr>gv=gv",
+		keys = { 'v', 'J', noremap },
+	},
+	{
+		desc = "Don't move cursor on shift+j",
+		cmd = 'mzJ`z',
+		keys = { 'n', 'J', noremap },
+	},
+	{
+		desc = 'Keep cursor center on page up',
+		cmd = '<c-u>zz',
+		keys = { 'n', '<c-u>', noremap },
+	},
+	{
+		desc = 'Keep cursor center on page down',
+		cmd = '<c-d>zz',
+		keys = { 'n', '<c-d>', noremap },
+	},
+	{
+		desc = 'Keep search terms in middle',
+		cmd = 'nzzzv',
+		keys = { 'n', 'n', noremap },
+	},
+	{
+		desc = 'Keep search terms in middle',
+		cmd = 'Nzzzv',
+		keys = { 'n', 'N', noremap },
+	},
+	{
+		desc = 'Search and replace current word',
+		cmd = [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+		keys = { 'n', '<leader>s', noremap },
+	},
+	{
+		desc = 'chmod +x current file',
+		cmd = '<cmd>!chmod +x %<cr>',
+		keys = { 'n', '<leader>x', noremap },
+	},
+})
 
--- Don't move cursor on shift+j
-vim.keymap.set('n', 'J', 'mzJ`z')
+-- Plugin binds
 
--- Keep cursor center on page up/down
-vim.keymap.set('n', '<C-d>', '<C-d>zz')
-vim.keymap.set('n', '<C-u>', '<C-u>zz')
-
--- Keep search terms in middle
-vim.keymap.set('n', 'n', 'nzzzv')
-vim.keymap.set('n', 'N', 'Nzzzv')
-
--- Keep clipboards separate
-vim.keymap.set('n', '<leader>y', '"+y')
-vim.keymap.set('v', '<leader>y', '"+y')
-vim.keymap.set('n', '<leader>Y', '"+Y')
-
--- Replace current word
-vim.keymap.set('n', '<leader>s', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-
--- Chmod +x current file
-vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>')
-
--- Telescope.
+-- Telescope
 local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-vim.keymap.set('n', '<leader>gg', builtin.git_files, {})
-vim.keymap.set('n', '<leader>lg', builtin.live_grep, {})
+local telescope = require('telescope')
+cc.add(
+	{
+		{
+			desc = 'Telescope find files',
+			cmd = builtin.find_files,
+			keys = { 'n', '<leader>ff', noremap },
+		},
+		{
+			desc = 'Telescope live grep',
+			cmd = builtin.live_grep,
+			keys = { 'n', '<leader>lg', noremap },
+		},
+		{
+			desc = 'Find git files',
+			cmd = builtin.git_files,
+			keys = { 'n', '<leader>gf', noremap },
+		},
+		{
+			desc = 'Open command center',
+			cmd = telescope.extensions.command_center.command_center,
+			keys = { 'n', '<c-s-p>', noremap },
+		},
+		{
+			desc = 'Open projects',
+			cmd = telescope.extensions.projects.projects,
+			keys = { 'n', '<c-p>', noremap },
+		}
+	},
+	{
+		category = 'Telescope'
+	})
 
 -- Harpoon
 local mark = require('harpoon.mark')
 local ui = require('harpoon.ui')
-vim.keymap.set('n', '<leader>ha', mark.add_file)
-vim.keymap.set('n', '<leader>hm', '<cmd>Telescope harpoon marks<cr>')
-vim.keymap.set('n', '<C-q>', ui.nav_prev)
-vim.keymap.set('n', '<C-e>', ui.nav_next)
+cc.add(
+	{
+		{
+			desc = 'Mark file',
+			cmd = mark.add_file,
+			keys = { 'n', '<leader>ha', noremap },
+		},
+		{
+			desc = 'Harpoons marks menu',
+			cmd = ui.toggle_quick_menu,
+			keys = { 'n', '<leader>hm', noremap },
+		},
+		{
+			desc = 'Previous mark',
+			cmd = ui.nav_prev,
+			keys = { 'n', '<c-q>', noremap },
+		},
+		{
+			desc = 'Next mark',
+			cmd = ui.nav_next,
+			keys = { 'n', '<c-e>', noremap },
+		}
+	},
+	{
+		category = 'Harpoon'
+	})
 
--- Undotree
-vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
+-- Open plugins
+cc.add({
+	{
+		desc = 'Toggle undo tree',
+		cmd = vim.cmd.UndotreeToggle,
+		keys = { 'n', '<leader>u', noremap },
+		category = 'Undo tree'
+	},
+	{
+		desc = 'Toggle Neotree',
+		cmd = '<cmd>Neotree toggle<cr>',
+		keys = { 'n', '\\', noremap },
+		category = 'Neotree'
+	}
+})
 
 -- LSP.
--- vim.keymap.set('n', '<leader>,', ':lua vim.diagnostic.goto_prev()<CR>')
--- vim.keymap.set('n', '<leader>.', ':lua vim.diagnostic.goto_next()<CR>')
--- vim.keymap.set('n', '<leader>/', ':lua vim.diagnostic.open_float()<CR>')
--- vim.keymap.set('n', '<leader>gd', ':lua vim.lsp.buf.definition()<CR>')
--- vim.keymap.set('n', '<leader>gi', ':lua vim.lsp.buf.implementation()<CR>')
--- vim.keymap.set('n', '<leader>gD', ':lua vim.lsp.buf.declaration()<CR>')
--- vim.keymap.set('n', '<leader>s', ':lua vim.lsp.buf.signature_help()<CR>')
--- vim.keymap.set('n', '<leader>h', ':lua vim.lsp.buf.hover()<CR>')
--- vim.keymap.set('n', '<leader>f', ':lua vim.lsp.buf.format{async = true}<CR>')
--- vim.keymap.set('n', '<leader>ca', ':lua vim.lsp.buf.code_action()<CR>')
--- vim.keymap.set('n', '<leader>rn', ':lua vim.lsp.buf.rename()<CR>')
--- vim.keymap.set('n', '<leader>rf', ':lua vim.lsp.buf.references()<CR>')
-
--- Bufferline
-vim.keymap.set('n', '<A-l>', ':BufferLineCycleNext<CR>')
-vim.keymap.set('n', '<A-h>', ':BufferLineCyclePrev<CR>')
-vim.keymap.set('n', '<A-L>', ':BufferLineMoveNext<CR>')
-vim.keymap.set('n', '<A-H>', ':BufferLineMovePrev<CR>')
-vim.keymap.set('n', '<A-p>', ':BufferLineTogglePin<CR>')
-vim.keymap.set('n', '<A-1>', ':BufferLineGoToBuffer1<CR>')
-vim.keymap.set('n', '<A-2>', ':BufferLineGoToBuffer2<CR>')
-vim.keymap.set('n', '<A-3>', ':BufferLineGoToBuffer3<CR>')
-vim.keymap.set('n', '<A-4>', ':BufferLineGoToBuffer4<CR>')
-vim.keymap.set('n', '<A-5>', ':BufferLineGoToBuffer5<CR>')
-vim.keymap.set('n', '<A-6>', ':BufferLineGoToBuffer6<CR>')
-vim.keymap.set('n', '<A-7>', ':BufferLineGoToBuffer7<CR>')
-vim.keymap.set('n', '<A-8>', ':BufferLineGoToBuffer8<CR>')
-vim.keymap.set('n', '<A-9>', ':BufferLineGoToBuffer9<CR>')
+cc.add(
+	{
+		{
+			desc = 'Previous diagnostic',
+			cmd = vim.diagnostic.goto_prev,
+		},
+		{
+			desc = 'Next diagnostic',
+			cmd = vim.diagnostic.goto_next,
+		},
+		{
+			desc = 'Open diagnostic',
+			cmd = vim.diagnostic.open_float,
+		},
+		{
+			desc = 'Go to definition',
+			cmd = vim.lsp.buf.definition,
+		},
+		{
+			desc = 'Show implementation',
+			cmd = vim.lsp.buf.implementation,
+		},
+		{
+			desc = 'Go to declaration (Some lsp don\'t support this, see definition instead)',
+			cmd = vim.lsp.buf.declaration,
+		},
+		{
+			desc = 'Signature help',
+			cmd = vim.lsp.buf.signature_help,
+		},
+		{
+			desc = 'Hover',
+			cmd = vim.lsp.buf.hover,
+		},
+		{
+			desc = 'Format',
+			cmd = '<cmd>lua vim.lsp.buf.format({async = true})<cr>',
+			keys = {
+				{ 'n', '<m-s-f>', noremap },
+				{ 'v', '<m-s-f>', noremap },
+				{ 'i', '<m-s-f>', noremap }
+			},
+		},
+		{
+			desc = 'Code action',
+			cmd = vim.lsp.buf.code_action,
+		},
+		{
+			desc = 'Rename',
+			cmd = vim.lsp.buf.rename,
+		},
+		{
+			desc = 'References',
+			cmd = vim.lsp.buf.references,
+		},
+		{
+			desc = 'Type definition',
+			cmd = vim.lsp.buf.type_definition,
+		}
+	},
+	{
+		category = 'LSP'
+	})

@@ -41,3 +41,11 @@ vim.api.nvim_create_autocmd('InsertEnter', {
 		vim.cmd('silent! Copilot<CR>')
 	end
 })
+
+-- Clean latex build files
+vim.api.nvim_create_autocmd('VimLeave', {
+	pattern = '*.tex',
+	callback = function()
+		vim.cmd('!latexclean %')
+	end
+})
